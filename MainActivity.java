@@ -1,45 +1,118 @@
-package com.example.splashscreen;
+package com.example.recyclerview;
 
+import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 
-public class MainActivity extends AppCompatActivity {
-    Animation spider1, spider2;
-    ImageView imgspider1, imgspider2;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.material.navigation.NavigationView;
+//import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    ImageGalleryAdapter2 adapter;
+    RecyclerView recyclerView;
+    ClickListiner listiner;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        //Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        //toolbar.setTitle("");
+        //setSupportActionBar(toolbar);
 
-        spider1 = AnimationUtils.loadAnimation(this,R.anim.spider1_anim);
-        spider2 = AnimationUtils.loadAnimation(this,R.anim.spider2_anim);
+        List<examData> list = new ArrayList<>();
+        list = getData();
 
-        imgspider1 = findViewById(R.id.p1);
-        imgspider2 = findViewById(R.id.p2);
-
-        imgspider1.startAnimation(spider1);
-        imgspider2.startAnimation(spider2);
-
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        listiner = new ClickListiner() {
             @Override
-            public void run() {
-                startActivity(new Intent(MainActivity.this,MainActivity2.class));
-                finish();
+            public void click(int index){
+                Toast.makeText(MainActivity.this,"clicked item index is "+index,Toast.LENGTH_LONG).show();
             }
-        },3000);
+        };
+        adapter= new ImageGalleryAdapter2(list, getApplication(),listiner);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+    }
 
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+    }
+
+    // Sample data for RecyclerView
+    private List<examData> getData()
+    {
+        List<examData> list = new ArrayList<>();
+        list.add(new examData("First Exam",
+                "May 23, 2015",
+                "Best Of Luck"));
+        list.add(new examData("Second Exam",
+                "June 09, 2015",
+                "b of l"));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        list.add(new examData("My Test Exam",
+                "April 27, 2017",
+                "This is testing exam .."));
+        return list;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        return false;
     }
 }
