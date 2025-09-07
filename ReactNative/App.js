@@ -1,73 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator, FlatList } from 'react-native';
-import {useState, useEffect} from 'react';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeScreen from "./src/screens/HomeScreen";
+import HistoryScreen from "./src/screens/HistoryScreen";
+import { Ionicons } from "@expo/vector-icons";
 
+const Tab = createBottomTabNavigator();
 
 export default function App() {
-  const [loading, setLoading] = useState(true)
-  const [todos, setTodos] = useState([])
-
-  
-
-  useEffect(()=>{
-    fetch('https://jsonplaceholder.typicode.com/todos')
-      .then(response => response.json())
-      .then(data => {
-        setTodos(data)
-        setLoading(false)
-      })
-  },[])
-
-  if(loading){
-    return (
-      <View style={styles.center}>
-        <text>Cargando...</text>
-        <ActivityIndicator
-          size='large'
-          color='#2457e3ff'
-        />
-      </View>
-    )
-  }
-
   return (
-    <View style={styles.container}>
-      <Text>Consumiendo datos de la API</Text>
-      <FlatList
-        data = {todos}
-        renderItem = {({item}) => <View style={styles.item}>
-          <Text>{item.title}</Text>
-          <Text>{item.completed ? "👍":"👎"}</Text>
-        </View>}
-        keyExtractor = {item => String(item.id)}
-      
-      />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ color, size }) => {
+            let iconName;
+            if (route.name === "Calculadora") {
+              iconName = "calculator";
+            } else if (route.name === "Historial") {
+              iconName = "time";
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          tabBarActiveTintColor: "#007AFF",
+          tabBarInactiveTintColor: "gray",
+        })}
+      >
+        <Tab.Screen name="Calculadora" component={HomeScreen} />
+        <Tab.Screen name="Historial" component={HistoryScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  center:{
-    flex:1,
-    alignItems:'center',
-    justifyContent:'center',
-  },
-
-  item:{
-    flexDirection:'row',
-    justifyContent:'space-between',
-    backgroundColor:'#5ef114ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius:15,
-  },
-
-});
